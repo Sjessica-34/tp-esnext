@@ -109,3 +109,57 @@ class TripService {
         });
     }
 }
+class PriceService {
+    map;
+
+    constructor() {
+        this.map = new Map([
+            ['paris', 100],
+            ['rio-de-janeiro', 800]
+          ])
+    }
+
+    findPriceByTripId(tripId) {
+
+        return new Promise((resolve, reject) => {
+    
+            setTimeout(() => {
+                if (this.map.has(tripId)){
+                    return resolve(this.map.get(tripId));
+                };
+                return reject("No price found for id " + tripId);
+            }, 2000)
+        });
+    }
+}
+
+const tripService = new TripService();
+const priceService = new PriceService();
+
+console.log(tripService.set);
+console.log(priceService.map);
+
+tripService.findByName("Paris")
+.then((value) => console.log(value))
+.catch((value) => console.log(value));
+
+tripService.findByName("Toulouse")
+.then((value) => console.log(value))
+.catch((value) => console.log(value));
+
+
+tripService.findByName("Rio de Janeiro")
+.then((value) => 
+    priceService.findPriceByTripId(value.id)
+        .then((price) => console.log(price))
+        .catch((price) => console.log(price))
+)
+.catch((value) => console.log(value));
+
+tripService.findByName("Nantes")
+.then((value) => 
+    priceService.findPriceByTripId(value.id)
+        .then((price) => console.log(price))
+        .catch((price) => console.log(price))
+)
+.catch((value) => value);
