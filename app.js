@@ -110,56 +110,55 @@ class TripService {
     }
 }
 class PriceService {
-    map;
 
     constructor() {
-        this.map = new Map([
-            ['paris', 100],
-            ['rio-de-janeiro', 800]
-          ])
+        // TODO Map of 2 trips
+        // 'paris' --> price = 100
+        // 'rio-de-janeiro' --> price = 800)
+        // no price for 'nantes'
+        this.tripServiceMap = new Map();
+        this.tripServiceMap.set("paris", 100)
+        this.tripServiceMap.set("rio-de-janeiro", 800)
     }
 
     findPriceByTripId(tripId) {
-
         return new Promise((resolve, reject) => {
-    
             setTimeout(() => {
-                if (this.map.has(tripId)){
-                    return resolve(this.map.get(tripId));
-                };
-                return reject("No price found for id " + tripId);
+                // ici l'exécution du code est asynchrone
+                // TODO utiliser resolve et reject en fonction du résultat de
+                //la recherche
+                if (this.tripServiceMap.has(tripId)) {
+                    resolve(this.tripServiceMap.get(tripId))
+                } else {
+                    reject("No price for trip id " + tripId)
+                }
             }, 2000)
         });
     }
 }
 
-const tripService = new TripService();
-const priceService = new PriceService();
+const tripservice = new TripService();
+const priceservice = new PriceService();
 
-console.log(tripService.set);
-console.log(priceService.map);
+tripservice.findByName("Paris")
+    .then(tripTrouve => console.log('Trip found ', tripTrouve))
+    .catch((err) => console.log(err))
 
-tripService.findByName("Paris")
-.then((value) => console.log(value))
-.catch((value) => console.log(value));
+tripservice.findByName("Toulouse")
+    .then(tripTrouve => console.log('Trip found: ', tripTrouve))
+    .catch((err) => console.log(err))
 
-tripService.findByName("Toulouse")
-.then((value) => console.log(value))
-.catch((value) => console.log(value));
+tripservice.findByName("Rio de Janeiro")
+    .then(tripTrouve => priceservice.findPriceByTripId(tripTrouve.id))
+    .then(price => console.log('Price found:', price))
+    .catch(error => console.log(error));
 
+tripservice.findByName("Nantes")
+    .then(tripTrouve => priceservice.findPriceByTripId(tripTrouve.id))
+    .then(price => console.log('Price found:', price))
+    .catch(error => console.log(error));
 
-tripService.findByName("Rio de Janeiro")
-.then((value) => 
-    priceService.findPriceByTripId(value.id)
-        .then((price) => console.log(price))
-        .catch((price) => console.log(price))
-)
-.catch((value) => console.log(value));
-
-tripService.findByName("Nantes")
-.then((value) => 
-    priceService.findPriceByTripId(value.id)
-        .then((price) => console.log(price))
-        .catch((price) => console.log(price))
-)
-.catch((value) => value);
+tripservice.findByName("Nantes")
+    .then(function (tripTrouve) { return priceservice.findPriceByTripId(tripTrouve.id);})
+    .then(price => console.log('Price found:', price))
+    .catch(error => console.log(error));
